@@ -12,13 +12,13 @@ namespace backend.Model
         public required DateTime DataAbertura { get; set; }
         public DateTime? DataFinalizado { get; set; }
         public required long EquipamentoId { get; set; }
-        // TODO: Busca inversa
+        public Equipamento? Equipamento { get; set; }
         public required long SetorSolicitanteId { get; set; }
-        // TODO: Busca inversa
+        public Setor? SetorSolicitante { get; set; }
         public required long SetorDestinoId { get; set; }
-        // TODO: Busca inversa
+        public Setor? SetorDestino { get; set; }
         public required long EstabelecimentoId { get; set; }
-        // TODO: Busca inversa
+        public Estabelecimento? Estabelecimento{ get; set; }
         public required string Ramal { get; set; }
         public required string Computador { get; set; }
         public required string Ip { get; set; }
