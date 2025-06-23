@@ -9,7 +9,7 @@ namespace backend.Model
         public long Id { get; set; }
         public required long ChamadoId { get; set; }
         public Chamado? Chamado { get; set; }
-        public required long UsuarioAtendimentoId { get; set; } // TODO: Avaliar como possibilitar a adição de múltiplos usuarios
+        public long? UsuarioAtendimentoId { get; set; }
         public Usuario? UsuarioAtendimento { get; set; }
         public required long SetorAtualId { get; set; }
         public Setor? SetorAtual { get; set; }

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using backend.Model.Enum;
 
 namespace backend.Model
 {
@@ -8,6 +7,6 @@ namespace backend.Model
         [Key]
         public long Id { get; set; }
         public required string Nome { get; set; }
-        public required StatusAtivo Status { get; set; }
+        public required bool Ativo { get; set; }
     }
 }

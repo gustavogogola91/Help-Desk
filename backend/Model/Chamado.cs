@@ -18,10 +18,11 @@ namespace backend.Model
         public required long SetorDestinoId { get; set; }
         public Setor? SetorDestino { get; set; }
         public required long EstabelecimentoId { get; set; }
-        public Estabelecimento? Estabelecimento{ get; set; }
+        public Estabelecimento? Estabelecimento { get; set; }
         public required string Ramal { get; set; }
         public required string Computador { get; set; }
         public required string Ip { get; set; }
-        public ICollection<string>? Anexo { get; set; }
+        public List<string>? Anexo { get; set; }
+        public ICollection<ChamadoAcompanhamento>? Acompanhamentos { get; set; }
     }
 }

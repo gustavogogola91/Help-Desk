@@ -25,7 +25,6 @@ namespace Data
 
             modelBuilder.HasPostgresEnum<GrupoSuporte>();
             modelBuilder.HasPostgresEnum<StatusAtendimento>();
-            modelBuilder.HasPostgresEnum<StatusAtivo>();
             modelBuilder.HasPostgresEnum<TipoUsuario>();
 
             modelBuilder.Entity<Chamado>(entity =>
@@ -54,7 +53,7 @@ namespace Data
             modelBuilder.Entity<ChamadoAcompanhamento>(entity =>
             {
                 entity.HasOne(e => e.Chamado)
-                    .WithMany()
+                    .WithMany(c => c.Acompanhamentos)
                     .HasForeignKey(e => e.ChamadoId)
                     .OnDelete(DeleteBehavior.Restrict);
 

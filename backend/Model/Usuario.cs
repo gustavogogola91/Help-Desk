@@ -11,7 +11,7 @@ namespace backend.Model
         public required string Username { get; set; }
         public required string Senha { get; set; }
         public required string Email { get; set; }
-        public required StatusAtivo Status { get; set; }
+        public required bool Ativo { get; set; }
         public required TipoUsuario Tipo { get; set; }
         public required ICollection<GrupoSuporte> Grupos { get; set; }
     }
