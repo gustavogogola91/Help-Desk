@@ -1,7 +1,10 @@
 using System.Text.Json.Serialization;
+using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
+using backend.Validators;
 using Data;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +23,9 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IValidator<ChamadoAcompanhamentoPostDTO>, ChamadoAcompanhamentoValidator>();
+builder.Services.AddScoped<IValidator<UsuarioPostDTO>, UsuarioValidator>();
 
 builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
 
