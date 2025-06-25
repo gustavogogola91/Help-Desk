@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using backend.Helpers;
+using backend.Interfaces;
 using Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +20,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
