@@ -29,6 +29,22 @@ namespace Data
 
             modelBuilder.Entity<Chamado>(entity =>
             {
+                entity.Property(e => e.Protocolo)
+                    .HasMaxLength(16)
+                    .IsRequired();
+
+                entity.Property(e => e.NomeSolicitante)
+                    .HasMaxLength(60)
+                    .IsRequired();
+
+                entity.Property(e => e.Ramal)
+                    .HasMaxLength(6)
+                    .IsRequired();
+
+                entity.Property(e => e.Ip)
+                    .HasMaxLength(15)
+                    .IsRequired();
+
                 entity.HasOne(e => e.Equipamento)
                     .WithMany()
                     .HasForeignKey(e => e.EquipamentoId)
@@ -88,10 +104,21 @@ namespace Data
 
             modelBuilder.Entity<Equipamento>(entity =>
             {
+                entity.Property(e => e.Nome)
+                    .HasMaxLength(60)
+                    .IsRequired();
+
                 entity.HasOne(e => e.Setor)
                     .WithMany()
                     .HasForeignKey(e => e.SetorId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Estabelecimento>(entity =>
+            {
+                entity.Property(e => e.Nome)
+                    .HasMaxLength(60)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<Setor>(entity =>
@@ -100,6 +127,25 @@ namespace Data
                     .WithMany()
                     .HasForeignKey(e => e.EstabelecimentoId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.Property(e => e.Nome)
+                    .HasMaxLength(60)
+                    .IsRequired();
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(60)
+                    .IsRequired();
+
+                entity.Property(e => e.Senha)
+                    .HasMaxLength(32)
+                    .IsRequired();
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(120)
+                    .IsRequired();
             });
         }
 
