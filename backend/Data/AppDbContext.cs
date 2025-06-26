@@ -9,8 +9,6 @@ namespace Data
 
         public AppDbContext(DbContextOptions options) : base(options) { }
 
-
-
         public DbSet<Chamado> tb_chamado { get; set; }
         public DbSet<ChamadoAcompanhamento> tb_chamado_acompanhamento { get; set; }
         public DbSet<ChamadoAtendimento> tb_chamado_atendimento { get; set; }
@@ -123,6 +121,10 @@ namespace Data
 
             modelBuilder.Entity<Setor>(entity =>
             {
+                entity.Property(e => e.Nome)
+                    .HasMaxLength(60)
+                    .IsRequired();
+
                 entity.HasOne(e => e.Estabelecimento)
                     .WithMany()
                     .HasForeignKey(e => e.EstabelecimentoId)
