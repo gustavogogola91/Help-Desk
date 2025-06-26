@@ -29,6 +29,9 @@ builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
 
 builder.Services.AddScoped<IValidator<ChamadoPostDTO>, ChamadoValidator>();
 builder.Services.AddScoped<IValidator<ChamadoAcompanhamentoPostDTO>, ChamadoAcompanhamentoValidator>();
+builder.Services.AddScoped<IValidator<EquipamentoPostDTO>, EquipamentoValidator>();
+builder.Services.AddScoped<IValidator<EstabelecimentoPostDTO>, EstabelecimentoValidator>();
+builder.Services.AddScoped<IValidator<SetorPostDTO>, SetorValidator>();
 builder.Services.AddScoped<IValidator<UsuarioPostDTO>, UsuarioValidator>();
 
 builder.Services.AddScoped<IChamadoAcompanhamentoRepository, ChamadoAcompanhamentoRepository>();
