@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
+using backend.Repository;
 using backend.Validators;
 using Data;
 using FluentValidation;
@@ -24,10 +25,19 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
+
+builder.Services.AddScoped<IValidator<ChamadoPostDTO>, ChamadoValidator>();
 builder.Services.AddScoped<IValidator<ChamadoAcompanhamentoPostDTO>, ChamadoAcompanhamentoValidator>();
 builder.Services.AddScoped<IValidator<UsuarioPostDTO>, UsuarioValidator>();
 
-builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
+builder.Services.AddScoped<IChamadoAcompanhamentoRepository, ChamadoAcompanhamentoRepository>();
+builder.Services.AddScoped<IChamadoAtendimentoRepository, ChamadoAtendimentoRepository>();
+builder.Services.AddScoped<IChamadoRepository, ChamadoRepository>();
+builder.Services.AddScoped<IEquipamentoRepository, EquipamentoRepository>();
+builder.Services.AddScoped<IEstabelecimentoRepository, EstabelecimentoRepository>();
+builder.Services.AddScoped<ISetorRepository, SetorRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
