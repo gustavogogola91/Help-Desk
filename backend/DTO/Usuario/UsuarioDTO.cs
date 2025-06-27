@@ -10,6 +10,6 @@ namespace backend.DTO
         public string? Email { get; set; }
         public bool Ativo { get; set; }
         public TipoUsuario Tipo { get; set; }
-        public ICollection<GrupoSuporte>? Grupos { get; set; }
+        public List<GrupoSuporte>? Grupos { get; set; }
     }
 }

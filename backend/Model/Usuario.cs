@@ -13,6 +13,6 @@ namespace backend.Model
         public required string Email { get; set; }
         public required bool Ativo { get; set; }
         public required TipoUsuario Tipo { get; set; }
-        public required ICollection<GrupoSuporte> Grupos { get; set; }
+        public required List<GrupoSuporte> Grupos { get; set; }  // FIXME: Planejar um modo de não depender de enums para esta ligação
     }
 }

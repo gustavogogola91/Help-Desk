@@ -16,5 +16,15 @@ namespace backend.Helpers
 
             AddRange(items);
         }
+
+        public PagedList(IEnumerable<T> items, int totalPages, int currentPage, int pageSize, int count)
+        {
+            CurrentPage = currentPage;
+            TotalPages = totalPages;
+            PageSize = pageSize;
+            TotalCount = count;
+
+            AddRange(items);
+        }
     }
 }

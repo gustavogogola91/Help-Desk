@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.DTO;
+using backend.Helpers;
 using backend.Model;
 
 namespace backend.Config
@@ -56,6 +57,9 @@ namespace backend.Config
                     opt => opt.MapFrom(src => src.Nome)
                 );
             CreateMap<SetorPostDTO, Setor>();
+
+            CreateMap<Usuario, UsuarioDTO>();
+            CreateMap<UsuarioPostDTO, Usuario>();
         }
     }
 }

@@ -3,6 +3,7 @@ using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
 using backend.Repository;
+using backend.Service;
 using backend.Validators;
 using Data;
 using FluentValidation;
@@ -41,6 +42,8 @@ builder.Services.AddScoped<IEquipamentoRepository, EquipamentoRepository>();
 builder.Services.AddScoped<IEstabelecimentoRepository, EstabelecimentoRepository>();
 builder.Services.AddScoped<ISetorRepository, SetorRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
