@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
+using backend.Middleware;
 using backend.Repository;
 using backend.Service;
 using backend.Validators;
@@ -61,6 +62,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("Default");
 
