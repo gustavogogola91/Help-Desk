@@ -2,6 +2,7 @@ using AutoMapper;
 using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
+using backend.Model;
 using FluentValidation;
 
 namespace backend.Service
@@ -9,12 +10,14 @@ namespace backend.Service
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly ISetorRepository _setorRepository;
         private readonly IValidator<UsuarioPostDTO> _usuarioValidator;
         private readonly IMapper _mapper;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, IValidator<UsuarioPostDTO> usuarioValidator, IMapper mapper)
+        public UsuarioService(IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IMapper mapper)
         {
             _usuarioRepository = usuarioRepository;
+            _setorRepository = setorRepository;
             _usuarioValidator = usuarioValidator;
             _mapper = mapper;
         }
@@ -42,6 +45,41 @@ namespace backend.Service
             var usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
 
             return usuarioDTO;
+        }
+
+        public async Task<PagedList<UsuarioDTO>> GetUsuarioBySetor(long idSetor, int currentPage)
+        {
+            var setorExiste = await _setorRepository.ExisteAsync(idSetor);
+            if (!setorExiste)
+            {
+                throw new ArgumentException("O Setor especificado não existe.");
+            }
+
+            var usuarios = await _usuarioRepository.GetUsuariosBySetor(idSetor, currentPage);
+
+            return usuarios;
+        }
+
+        public async Task<OperationResult> NewUsuario(UsuarioPostDTO post)
+        {
+            var validacao = _usuarioValidator.ValidateAsync(post).Result;
+
+            if (!validacao.IsValid)
+            {
+                return new OperationResult(false, validacao.Errors, "400");
+            }
+
+            Usuario usuario = _mapper.Map<Usuario>(post);
+
+            post.IdSetoresSuporte.ForEach((id) =>
+            {
+                usuario.SetoresSuporte.Add(new SetorUsuario(id));
+            });
+
+            var criado = await _usuarioRepository.NewUsuario(usuario);
+
+            return new OperationResult(true, [], "");
+
         }
     }
 }

@@ -7,9 +7,11 @@ namespace backend.Validators
     public class UsuarioValidator : AbstractValidator<UsuarioPostDTO>
     {
         private readonly ISetorRepository _setorRepository;
-        public UsuarioValidator(ISetorRepository setorRepository)
+        private readonly IUsuarioRepository _usuarioRepository;
+        public UsuarioValidator(ISetorRepository setorRepository, IUsuarioRepository usuarioRepository)
         {
             _setorRepository = setorRepository;
+            _usuarioRepository = usuarioRepository;
 
             RuleFor(u => u.Nome)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
@@ -17,7 +19,8 @@ namespace backend.Validators
 
             RuleFor(u => u.Username)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
-                .MaximumLength(60).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres");
+                .MaximumLength(60).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres")
+                .MustAsync(BeUniqueUsername).WithMessage("Este username já está em uso.");
 
             RuleFor(u => u.Senha)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
@@ -26,10 +29,8 @@ namespace backend.Validators
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
                 .EmailAddress().WithMessage("{PropertyName} deve ser um email válido")
-                .MaximumLength(120).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres");
-
-            RuleFor(u => u.Tipo)
-                .NotEmpty().WithMessage("{PropertyName} é obrigatório");
+                .MaximumLength(120).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres")
+                .MustAsync(BeUniqueEmail).WithMessage("Este email já está em uso.");
 
             RuleFor(u => u.IdSetoresSuporte)
                 .NotNull().WithMessage("A lista de setores de suporte não deve ser nula")
@@ -43,6 +44,16 @@ namespace backend.Validators
         private async Task<bool> BeAnExistingSetor(long setorId, CancellationToken cancellationToken)
         {
             return await _setorRepository.ExisteAsync(setorId);
+        }
+
+        private async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
+        {
+            return !await _usuarioRepository.UsernameExistsAsync(username);
+        }
+
+        private async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
+        {
+            return !await _usuarioRepository.EmailExistsAsync(email);
         }
     }
 }

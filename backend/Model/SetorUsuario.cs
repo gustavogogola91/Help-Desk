@@ -4,6 +4,11 @@ namespace backend.Model
 {
     public class SetorUsuario
     {
+        public SetorUsuario(long setorId)
+        {
+            SetorId = setorId;
+        }
+
         [Key]
         public long Id { get; set; }
         public long UsuarioId { get; set; }
