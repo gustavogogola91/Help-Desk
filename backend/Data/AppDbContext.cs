@@ -6,7 +6,6 @@ namespace Data
 {
     public class AppDbContext : DbContext
     {
-
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Chamado> tb_chamado { get; set; }
@@ -15,13 +14,13 @@ namespace Data
         public DbSet<Equipamento> tb_equipamento { get; set; }
         public DbSet<Estabelecimento> tb_estabelecimento { get; set; }
         public DbSet<Setor> tb_setor { get; set; }
+        public DbSet<SetorUsuario> tb_setor_usuario { get; set; }
         public DbSet<Usuario> tb_usuario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.HasPostgresEnum<GrupoSuporte>();
             modelBuilder.HasPostgresEnum<StatusAtendimento>();
             modelBuilder.HasPostgresEnum<TipoUsuario>();
 
@@ -129,6 +128,19 @@ namespace Data
                     .WithMany()
                     .HasForeignKey(e => e.EstabelecimentoId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<SetorUsuario>(entity =>
+            {
+                entity.HasKey(su => new { su.UsuarioId, su.SetorId });
+
+                entity.HasOne(e => e.Usuario)
+                    .WithMany(u => u.SetoresSuporte)
+                    .HasForeignKey(e => e.UsuarioId);
+
+                entity.HasOne(e => e.Setor)
+                    .WithMany()
+                    .HasForeignKey(e => e.SetorId);
             });
 
             modelBuilder.Entity<Usuario>(entity =>

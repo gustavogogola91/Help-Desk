@@ -1,12 +1,16 @@
 using backend.DTO;
+using backend.Interfaces;
 using FluentValidation;
 
 namespace backend.Validators
 {
     public class UsuarioValidator : AbstractValidator<UsuarioPostDTO>
     {
-        public UsuarioValidator()
+        private readonly ISetorRepository _setorRepository;
+        public UsuarioValidator(ISetorRepository setorRepository)
         {
+            _setorRepository = setorRepository;
+
             RuleFor(u => u.Nome)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
                 .MaximumLength(60).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres");
@@ -27,8 +31,18 @@ namespace backend.Validators
             RuleFor(u => u.Tipo)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório");
 
-            RuleFor(u => u.Grupos)
-                .NotEmpty().WithMessage("{PropertyName} é obrigatório");
+            RuleFor(u => u.IdSetoresSuporte)
+                .NotNull().WithMessage("A lista de setores de suporte não deve ser nula")
+                .Must(ids => ids != null && ids.Any()).WithMessage("Usuario deve estar ligado a pelo menos um setor")
+                .ForEach(id =>
+                {
+                    id.MustAsync(BeAnExistingSetor).WithMessage("Um dos IDs de setor de suporte não existe.");
+                });
+        }
+
+        private async Task<bool> BeAnExistingSetor(long setorId, CancellationToken cancellationToken)
+        {
+            return await _setorRepository.ExisteAsync(setorId);
         }
     }
 }

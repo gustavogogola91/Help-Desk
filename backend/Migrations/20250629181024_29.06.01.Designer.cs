@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250627160350_27.06.01")]
-    partial class _270601
+    [Migration("20250629181024_29.06.01")]
+    partial class _290601
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,6 @@ namespace backend.Migrations
                 .HasAnnotation("ProductVersion", "8.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "grupo_suporte", new[] { "ti", "man_e", "man_p", "climatizacao" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "status_atendimento", new[] { "aguardando", "em_atendimento", "concluido" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_usuario", new[] { "adm", "suporte" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -253,6 +252,24 @@ namespace backend.Migrations
                     b.ToTable("tb_setor");
                 });
 
+            modelBuilder.Entity("backend.Model.SetorUsuario", b =>
+                {
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SetorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UsuarioId", "SetorId");
+
+                    b.HasIndex("SetorId");
+
+                    b.ToTable("tb_setor_usuario");
+                });
+
             modelBuilder.Entity("backend.Model.Usuario", b =>
                 {
                     b.Property<long>("Id")
@@ -268,10 +285,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
-
-                    b.Property<int[]>("Grupos")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -405,9 +418,33 @@ namespace backend.Migrations
                     b.Navigation("Estabelecimento");
                 });
 
+            modelBuilder.Entity("backend.Model.SetorUsuario", b =>
+                {
+                    b.HasOne("backend.Model.Setor", "Setor")
+                        .WithMany()
+                        .HasForeignKey("SetorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Model.Usuario", "Usuario")
+                        .WithMany("SetoresSuporte")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Setor");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("backend.Model.Chamado", b =>
                 {
                     b.Navigation("Acompanhamentos");
+                });
+
+            modelBuilder.Entity("backend.Model.Usuario", b =>
+                {
+                    b.Navigation("SetoresSuporte");
                 });
 #pragma warning restore 612, 618
         }

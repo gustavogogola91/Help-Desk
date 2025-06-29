@@ -8,13 +8,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class _250601 : Migration
+    public partial class _290601 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:grupo_suporte", "ti,man_e,man_p,climatizacao")
                 .Annotation("Npgsql:Enum:status_atendimento", "aguardando,em_atendimento,concluido")
                 .Annotation("Npgsql:Enum:tipo_usuario", "adm,suporte");
 
@@ -43,8 +42,7 @@ namespace backend.Migrations
                     Senha = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     Email = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     Ativo = table.Column<bool>(type: "boolean", nullable: false),
-                    Tipo = table.Column<int>(type: "integer", nullable: false),
-                    Grupos = table.Column<int[]>(type: "integer[]", nullable: false)
+                    Tipo = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +55,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "text", nullable: false),
+                    Nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     EstabelecimentoId = table.Column<long>(type: "bigint", nullable: false),
                     Suporte = table.Column<bool>(type: "boolean", nullable: false),
                     Ativo = table.Column<bool>(type: "boolean", nullable: false)
@@ -92,6 +90,31 @@ namespace backend.Migrations
                         principalTable: "tb_setor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_setor_usuario",
+                columns: table => new
+                {
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    SetorId = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_setor_usuario", x => new { x.UsuarioId, x.SetorId });
+                    table.ForeignKey(
+                        name: "FK_tb_setor_usuario_tb_setor_SetorId",
+                        column: x => x.SetorId,
+                        principalTable: "tb_setor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tb_setor_usuario_tb_usuario_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "tb_usuario",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -275,6 +298,11 @@ namespace backend.Migrations
                 name: "IX_tb_setor_EstabelecimentoId",
                 table: "tb_setor",
                 column: "EstabelecimentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_setor_usuario_SetorId",
+                table: "tb_setor_usuario",
+                column: "SetorId");
         }
 
         /// <inheritdoc />
@@ -285,6 +313,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "tb_chamado_atendimento");
+
+            migrationBuilder.DropTable(
+                name: "tb_setor_usuario");
 
             migrationBuilder.DropTable(
                 name: "tb_chamado");

@@ -58,6 +58,8 @@ namespace backend.Config
                 );
             CreateMap<SetorPostDTO, Setor>();
 
+            CreateMap<SetorUsuario, SetorUsuarioDTO>();
+
             CreateMap<Usuario, UsuarioDTO>();
             CreateMap<UsuarioPostDTO, Usuario>();
         }
