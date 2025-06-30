@@ -49,17 +49,20 @@ namespace backend.Controllers
             return Ok(list);
         }
 
-        [HttpPost]
+        [HttpPost("novo")]
         public async Task<IActionResult> NewUsuario([FromBody] UsuarioPostDTO post)
         {
-            var result = await _usuarioService.NewUsuario(post);
+            await _usuarioService.NewUsuario(post);
 
-            if (result.IsSucess)
-            {
-                return Created();
-            }
+            return Created();
+        }
 
-            return BadRequest(result.ErrorMessage);
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> AlterarStatus(long id)
+        {
+            await _usuarioService.AlterarStatus(id);
+
+            return Ok();
         }
     }
 }

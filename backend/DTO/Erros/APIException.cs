@@ -2,6 +2,12 @@ namespace backend.DTO.Erros
 {
     public class APIException
     {
+        public APIException(string? statusCode, string? message)
+        {
+            StatusCode = statusCode;
+            Message = message;
+        }
+
         public APIException(string? statusCode, string? message, string? details)
         {
             StatusCode = statusCode;

@@ -5,9 +5,10 @@ namespace backend.Interfaces
 {
     public interface IUsuarioService
     {
+        Task AlterarStatus(long id);
         Task<PagedList<UsuarioDTO>> GetAllUsuarios(int currentPage);
-        Task<UsuarioDTO> GetUsuarioById(int id);
+        Task<UsuarioDTO> GetUsuarioById(long id);
         Task<PagedList<UsuarioDTO>> GetUsuarioBySetor(long id, int currentPage);
-        Task<OperationResult> NewUsuario(UsuarioPostDTO post);
+        Task NewUsuario(UsuarioPostDTO post);
     }
 }

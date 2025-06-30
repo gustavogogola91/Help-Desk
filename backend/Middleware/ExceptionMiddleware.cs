@@ -1,6 +1,9 @@
 using System.Net;
 using System.Text.Json;
 using backend.DTO.Erros;
+using backend.Exceptions;
+using backend.Helpers;
+using FluentValidation;
 
 namespace backend.Middleware
 {
@@ -22,6 +25,51 @@ namespace backend.Middleware
             try
             {
                 await _next(context);
+            }
+            catch (NotFoundException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, $"Id: {ex.Id}");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(response, options);
+                await context.Response.WriteAsync(json);
+            }
+            catch (ValidationException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                var errosDict = new Dictionary<string, string[]>();
+                foreach (var erro in ex.Errors)
+                {
+                    if (!errosDict.ContainsKey(erro.PropertyName))
+                    {
+                        errosDict[erro.PropertyName] = [erro.ErrorMessage];
+                    }
+                    else
+                    {
+                        errosDict[erro.PropertyName] = errosDict[erro.PropertyName].Append(erro.ErrorMessage).ToArray();
+                    }
+                }
+
+                var erroString = ValidationErrorFormater.FormatErrorsToString(errosDict);
+
+                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, erroString);
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(response, options);
+                await context.Response.WriteAsync(json);
             }
             catch (Exception ex)
             {

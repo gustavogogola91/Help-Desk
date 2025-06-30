@@ -1,5 +1,6 @@
 using AutoMapper;
 using backend.DTO;
+using backend.Exceptions;
 using backend.Helpers;
 using backend.Interfaces;
 using backend.Model;
@@ -25,9 +26,22 @@ namespace backend.Service
             _hasher = hasher;
         }
 
+        public async Task AlterarStatus(long id)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException($"Usuário não encontrado", id);
+            usuario.Ativo = !usuario.Ativo;
+
+            await _usuarioRepository.SalvarAlteracao(usuario);
+        }
+
         public async Task<PagedList<UsuarioDTO>> GetAllUsuarios(int currentPage)
         {
             var usuarios = await _usuarioRepository.GetAllUsuarios(currentPage);
+
+            if (!usuarios.Any())
+            {
+                throw new NotFoundException("Nenhum usuário encontrado");
+            }
 
             var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
 
@@ -36,15 +50,9 @@ namespace backend.Service
             return pagedlist;
         }
 
-        public async Task<UsuarioDTO> GetUsuarioById(int id)
+        public async Task<UsuarioDTO> GetUsuarioById(long id)
         {
-            var usuario = await _usuarioRepository.GetUsuarioById(id);
-
-            if (usuario == null)
-            {
-                return null!;
-            }
-
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Nenhum usuário encontrado", id);
             var usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
 
             return usuarioDTO;
@@ -55,7 +63,7 @@ namespace backend.Service
             var setorExiste = await _setorRepository.ExisteAsync(idSetor);
             if (!setorExiste)
             {
-                throw new ArgumentException("O Setor especificado não existe.");
+                throw new NotFoundException("O Setor especificado não existe.", idSetor);
             }
 
             var usuarios = await _usuarioRepository.GetUsuariosBySetor(idSetor, currentPage);
@@ -63,13 +71,13 @@ namespace backend.Service
             return usuarios;
         }
 
-        public async Task<OperationResult> NewUsuario(UsuarioPostDTO post)
+        public async Task NewUsuario(UsuarioPostDTO post)
         {
             var validacao = _usuarioValidator.ValidateAsync(post).Result;
 
             if (!validacao.IsValid)
             {
-                return new OperationResult(false, validacao.Errors, "400");
+                throw new ValidationException("Informações do usuário inválidas", validacao.Errors);
             }
 
             Usuario usuario = _mapper.Map<Usuario>(post);
@@ -81,9 +89,7 @@ namespace backend.Service
                 usuario.SetoresSuporte.Add(new SetorUsuario(id));
             });
 
-            var criado = await _usuarioRepository.NewUsuario(usuario);
-
-            return new OperationResult(true);
+            await _usuarioRepository.NewUsuario(usuario);
         }
     }
 }

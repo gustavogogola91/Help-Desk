@@ -10,8 +10,9 @@ namespace backend.Interfaces
         Task<bool> EmailExistsAsync(string email);
         Task<bool> UsernameExistsAsync(string username);
         Task<PagedList<Usuario>> GetAllUsuarios(int currentPage);
-        Task<Usuario> GetUsuarioById(int id);
+        Task<Usuario> GetUsuarioById(long id);
         Task<PagedList<UsuarioDTO>> GetUsuariosBySetor(long setorId, int currentPage);
-        Task<bool> NewUsuario(Usuario usuario);
+        Task NewUsuario(Usuario usuario);
+        Task SalvarAlteracao(Usuario usuario);
     }
 }

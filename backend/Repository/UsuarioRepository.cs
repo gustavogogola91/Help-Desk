@@ -41,7 +41,7 @@ namespace backend.Repository
             return pagedList;
         }
 
-        public async Task<Usuario> GetUsuarioById(int id)
+        public async Task<Usuario> GetUsuarioById(long id)
         {
             var usuario = await _database.tb_usuario.FirstOrDefaultAsync(u => u.Id == id);
             return usuario!;
@@ -66,12 +66,16 @@ namespace backend.Repository
             return pagedList;
         }
 
-        public async Task<bool> NewUsuario(Usuario usuario)
+        public async Task NewUsuario(Usuario usuario)
         {
             _database.tb_usuario.Add(usuario);
             await _database.SaveChangesAsync();
-            
-            return true;
+        }
+
+        public async Task SalvarAlteracao(Usuario usuario)
+        {
+            _database.tb_usuario.Update(usuario);
+            await _database.SaveChangesAsync();
         }
     }
 }
