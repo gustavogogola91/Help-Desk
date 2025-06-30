@@ -31,7 +31,7 @@ namespace backend.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, $"Id: {ex.Id}");
+                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, ex.Id == null ? $"Id: {ex.Id}" : "Não informado");
 
                 var options = new JsonSerializerOptions
                 {
