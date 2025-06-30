@@ -45,6 +45,8 @@ builder.Services.AddScoped<IEstabelecimentoRepository, EstabelecimentoRepository
 builder.Services.AddScoped<ISetorRepository, SetorRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
+builder.Services.AddScoped<ISetorService, SetorService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
