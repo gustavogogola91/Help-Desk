@@ -32,6 +32,7 @@ namespace backend.Repository
         {
             return await _database.tb_usuario.AnyAsync(u => u.Username == username);
         }
+        
         public async Task<PagedList<Usuario>> GetAllUsuarios(int currentPage)
         {
             var query = _database.tb_usuario.AsQueryable();

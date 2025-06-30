@@ -9,8 +9,13 @@ namespace backend.Helpers
             ErrorCode = errorCode;
         }
 
+        public OperationResult(bool isSucess)
+        {
+            IsSucess = isSucess;
+        }
+
         public bool IsSucess { get; set; }
-        public List<FluentValidation.Results.ValidationFailure> ErrorMessage { get; set; }
+        public List<FluentValidation.Results.ValidationFailure>? ErrorMessage { get; set; }
         public string? ErrorCode { get; set; }
     }
 }

@@ -13,13 +13,16 @@ namespace backend.Service
         private readonly ISetorRepository _setorRepository;
         private readonly IValidator<UsuarioPostDTO> _usuarioValidator;
         private readonly IMapper _mapper;
+        private readonly IEncryptHelper _hasher;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IMapper mapper)
+        public UsuarioService(IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IMapper mapper,
+            IEncryptHelper hasher)
         {
             _usuarioRepository = usuarioRepository;
             _setorRepository = setorRepository;
             _usuarioValidator = usuarioValidator;
             _mapper = mapper;
+            _hasher = hasher;
         }
 
         public async Task<PagedList<UsuarioDTO>> GetAllUsuarios(int currentPage)
@@ -71,6 +74,8 @@ namespace backend.Service
 
             Usuario usuario = _mapper.Map<Usuario>(post);
 
+            usuario.Senha = _hasher.EncryptPassword(usuario.Senha);
+
             post.IdSetoresSuporte.ForEach((id) =>
             {
                 usuario.SetoresSuporte.Add(new SetorUsuario(id));
@@ -78,8 +83,7 @@ namespace backend.Service
 
             var criado = await _usuarioRepository.NewUsuario(usuario);
 
-            return new OperationResult(true, [], "");
-
+            return new OperationResult(true);
         }
     }
 }
