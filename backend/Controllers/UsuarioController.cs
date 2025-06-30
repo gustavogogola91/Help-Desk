@@ -17,13 +17,9 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuarios(int currentPage)
+        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuarios(int currentPage = 1)
         {
             var list = await _usuarioService.GetAllUsuarios(currentPage);
-            if (list == null || !list.Any())
-            {
-                return NotFound("Sem usuários cadastrados");
-            }
             return Ok(list);
         }
 
@@ -39,7 +35,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("/setor/{id}")]
-        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetUsuarioBySetor(long id, int currentPage)
+        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetUsuarioBySetor(long id, int currentPage = 1)
         {
             var list = await _usuarioService.GetUsuarioBySetor(id, currentPage);
             if (list == null || !list.Any())
@@ -64,5 +60,7 @@ namespace backend.Controllers
 
             return Ok();
         }
+
+        // TODO: Endpoints para alteração das informações do usuário
     }
 }
