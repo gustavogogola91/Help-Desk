@@ -24,7 +24,7 @@ namespace backend.Validators
 
             RuleFor(u => u.Senha)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
-                .Length(8, 32).WithMessage("{PropertyName} deve conter entre {MinLength} e {MaxLength}");
+                .Length(8, 32).WithMessage("{PropertyName} deve conter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
