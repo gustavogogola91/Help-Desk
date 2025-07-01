@@ -26,7 +26,7 @@ namespace backend.Service
             _hasher = hasher;
         }
 
-        public async Task AlterarStatus(long id)
+        public async Task ModifyStatus(long id)
         {
             var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException($"Usuário não encontrado", id);
             usuario.Ativo = !usuario.Ativo;
