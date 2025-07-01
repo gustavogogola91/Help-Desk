@@ -91,5 +91,15 @@ namespace backend.Service
 
             await _usuarioRepository.NewUsuario(usuario);
         }
+
+        public async Task UserChangePassword(long id, ChangePasswordDTO dto)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Nenhum usuário encontrado", id);
+
+            if (!_hasher.VerifyPassword(dto.SenhaAtual, usuario.Senha))
+            {
+                // throw new 
+            }
+        }
     }
 }

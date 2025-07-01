@@ -1,6 +1,7 @@
 using backend.DTO;
 using backend.Helpers;
 using backend.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -62,5 +63,21 @@ namespace backend.Controllers
         }
 
         // TODO: Endpoints para alteração das informações do usuário
+
+        [HttpPatch("{id}/password")]
+        public async Task<IActionResult> UserChangePassword([FromBody] ChangePasswordDTO dto, long id)
+        {
+            await _usuarioService.UserChangePassword(id, dto);
+
+            return Ok();
+        }
+
+        // TODO: Criar metodo para o admin resetar a senha (em controller especifico talvez)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ModifyUsuario([FromBody] UsuarioPutDTO put, long id)
+        {
+            return Ok();
+        }
     }
 }
