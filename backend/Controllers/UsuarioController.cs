@@ -34,7 +34,7 @@ namespace backend.Controllers
             return Ok(usuario);
         }
 
-        [HttpGet("/setor/{id}")]
+        [HttpGet("setor/{id}")]
         public async Task<ActionResult<PagedList<UsuarioDTO>>> GetUsuarioBySetor(long id, int currentPage = 1)
         {
             var list = await _usuarioService.GetUsuarioBySetor(id, currentPage);
@@ -54,9 +54,9 @@ namespace backend.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> AlterarStatus(long id)
+        public async Task<IActionResult> ModifyStatus(long id)
         {
-            await _usuarioService.AlterarStatus(id);
+            await _usuarioService.ModifyStatus(id);
 
             return Ok();
         }
