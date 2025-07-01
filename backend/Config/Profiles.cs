@@ -60,7 +60,11 @@ namespace backend.Config
 
             CreateMap<SetorUsuario, SetorUsuarioDTO>();
 
-            CreateMap<Usuario, UsuarioDTO>();
+            CreateMap<Usuario, UsuarioDTO>()
+                .ForMember(
+                    dest => dest.SetoresSuporte,
+                    opt => opt.MapFrom(src => src.SetoresSuporte.Select(su => su.Setor!.Nome))
+                );
             CreateMap<UsuarioPostDTO, Usuario>();
         }
     }
