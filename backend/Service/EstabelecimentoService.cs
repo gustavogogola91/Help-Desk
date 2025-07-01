@@ -39,7 +39,7 @@ namespace backend.Service
 
         public async Task<EstabelecimentoDTO> GetEstabelecimentoById(long id)
         {
-            var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Nenhum usuário encontrado", id);
+            var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Nenhum estabelecimento encontrado", id);
             var estabelecimentoDTO = _mapper.Map<EstabelecimentoDTO>(estabelecimento);
 
             return estabelecimentoDTO;
