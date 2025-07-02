@@ -14,6 +14,11 @@ namespace backend.Middleware
         private readonly ILogger<ExceptionMiddleware> _logger = logger;
         private readonly IHostEnvironment _env = env;
 
+        private readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         public async Task InvokeAsync(HttpContext context)
         {
             try
@@ -27,12 +32,7 @@ namespace backend.Middleware
 
                 var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, ex.Id != null ? $"Id: {ex.Id}" : "Não informado");
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
             }
             catch (ValidationException ex)
@@ -57,12 +57,7 @@ namespace backend.Middleware
 
                 var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, erroString);
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
             }
             catch (InvalidCredentialException ex)
@@ -74,12 +69,7 @@ namespace backend.Middleware
 
                 var response = new APIException(context.Response.StatusCode.ToString(), ex.Message);
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
             }
             catch (ArgumentException ex)
@@ -89,12 +79,7 @@ namespace backend.Middleware
 
                 var response = new APIException(context.Response.StatusCode.ToString(), ex.Message);
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
             }
             catch (Exception ex)
@@ -107,12 +92,7 @@ namespace backend.Middleware
                     new APIException(context.Response.StatusCode.ToString(), ex.Message, ex.StackTrace!.ToString()) :
                     new APIException(context.Response.StatusCode.ToString(), ex.Message, "Internal Server Error");
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
             }
         }

@@ -32,8 +32,6 @@ namespace backend.Controllers
             return Created();
         }
 
-        //TODO: Continuar com os endpoints
-
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> ModifyStatus(long id)
         {

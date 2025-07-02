@@ -47,8 +47,6 @@ namespace backend.Controllers
             return Ok();
         }
 
-        // TODO: Endpoints para alteração das informações do usuário
-
         [HttpPatch("{id}/password")]
         public async Task<IActionResult> UserChangePassword([FromBody] ChangePasswordDTO dto, long id)
         {
