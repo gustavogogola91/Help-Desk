@@ -28,10 +28,6 @@ namespace backend.Controllers
         public async Task<ActionResult<UsuarioDTO>> GetUsuarioById(int id)
         {
             var usuario = await _usuarioService.GetUsuarioById(id);
-            if (usuario == null)
-            {
-                return NotFound($"Usuário ID ${id} não encontrado");
-            }
             return Ok(usuario);
         }
 
@@ -39,10 +35,6 @@ namespace backend.Controllers
         public async Task<ActionResult<PagedList<UsuarioDTO>>> GetUsuarioBySetor(long id, int currentPage = 1)
         {
             var list = await _usuarioService.GetUsuarioBySetor(id, currentPage);
-            if (list == null || !list.Any())
-            {
-                return NotFound("Nenhum usuário encontrado");
-            }
             return Ok(list);
         }
 
@@ -50,7 +42,6 @@ namespace backend.Controllers
         public async Task<IActionResult> NewUsuario([FromBody] UsuarioPostDTO post)
         {
             await _usuarioService.NewUsuario(post);
-
             return Created();
         }
 
@@ -58,7 +49,6 @@ namespace backend.Controllers
         public async Task<IActionResult> ModifyStatus(long id)
         {
             await _usuarioService.ModifyStatus(id);
-
             return Ok();
         }
 
@@ -68,15 +58,21 @@ namespace backend.Controllers
         public async Task<IActionResult> UserChangePassword([FromBody] ChangePasswordDTO dto, long id)
         {
             await _usuarioService.UserChangePassword(id, dto);
-
             return Ok();
         }
 
         // TODO: Criar metodo para o admin resetar a senha (em controller especifico talvez)
+        [HttpPatch("admin/{id}/password")]
+        public async Task<IActionResult> ResetPassword(long id)
+        {
+            await _usuarioService.AdminResetUserPassword(id);
+            return Ok();
+        }
 
-        [HttpPut("{id}")]
+        [HttpPut("alterar/{id}")]
         public async Task<IActionResult> ModifyUsuario([FromBody] UsuarioPutDTO put, long id)
         {
+            await _usuarioService.ModifyUsuario(put, id);
             return Ok();
         }
     }
