@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Authentication;
 using AutoMapper;
 using backend.DTO;
 using backend.Exceptions;
@@ -10,25 +12,28 @@ namespace backend.Service
 {
     public class UsuarioService : IUsuarioService
     {
+        private readonly IConfiguration _config;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ISetorRepository _setorRepository;
         private readonly IValidator<UsuarioPostDTO> _usuarioValidator;
+        private readonly IValidator<ChangePasswordDTO> _changePasswordValidator;
         private readonly IMapper _mapper;
         private readonly IEncryptHelper _hasher;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IMapper mapper,
-            IEncryptHelper hasher)
+        public UsuarioService(IConfiguration config, IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IValidator<ChangePasswordDTO> changePasswordValidator, IMapper mapper, IEncryptHelper hasher)
         {
+            _config = config;
             _usuarioRepository = usuarioRepository;
             _setorRepository = setorRepository;
             _usuarioValidator = usuarioValidator;
+            _changePasswordValidator = changePasswordValidator;
             _mapper = mapper;
             _hasher = hasher;
         }
 
         public async Task ModifyStatus(long id)
         {
-            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException($"Usuário não encontrado", id);
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Usuário não encontrado", id);
             usuario.Ativo = !usuario.Ativo;
 
             await _usuarioRepository.SalvarAlteracao(usuario);
@@ -52,7 +57,7 @@ namespace backend.Service
 
         public async Task<UsuarioDTO> GetUsuarioById(long id)
         {
-            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Nenhum usuário encontrado", id);
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Usuário não encontrado", id);
             var usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
 
             return usuarioDTO;
@@ -94,12 +99,57 @@ namespace backend.Service
 
         public async Task UserChangePassword(long id, ChangePasswordDTO dto)
         {
-            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Nenhum usuário encontrado", id);
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Usuário não encontrado", id);
+
+            var validacao = _changePasswordValidator.Validate(dto);
+
+            if (!validacao.IsValid)
+            {
+                throw new ValidationException("Informações inválidas", validacao.Errors);
+            }
 
             if (!_hasher.VerifyPassword(dto.SenhaAtual, usuario.Senha))
             {
-                // throw new 
+                throw new InvalidCredentialException("Credenciais inválidas");
             }
+
+            usuario.Senha = _hasher.EncryptPassword(dto.NovaSenha);
+
+            await _usuarioRepository.SalvarAlteracao(usuario);
+        }
+        //TODO: bloquear para apenas admins apos implementar JWT
+        public async Task AdminResetUserPassword(long id)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Usuário não encontrado", id);
+
+            var defaultPassword = _config["Default:Password"] ?? throw new Exception("Senha padrão não encontrada");
+
+            usuario.Senha = _hasher.EncryptPassword(defaultPassword);
+
+            await _usuarioRepository.SalvarAlteracao(usuario);
+        }
+        //TODO: bloquear para apenas admins após implementar JWT
+        public async Task ModifyUsuario(UsuarioPutDTO put, long id)
+        {
+            var usuario = await _usuarioRepository.GetUsuarioById(id) ?? throw new NotFoundException("Usuário não encontrado", id);
+
+            usuario.Nome = put.Nome ?? usuario.Nome;
+
+            if (put.Username != null)
+            {
+                if (await _usuarioRepository.UsernameExistsAsync(put.Username))
+                {
+                    usuario.Username = put.Username;
+                }
+                else
+                {
+                    throw new ArgumentException($"Username {put.Username} já está em uso");
+                }
+            }
+            usuario.Email = put.Email ?? usuario.Email;
+            usuario.Tipo = put.Tipo ?? usuario.Tipo;
+
+            await _usuarioRepository.SalvarAlteracao(usuario);
         }
     }
 }

@@ -29,8 +29,7 @@ namespace backend.Validators
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
                 .EmailAddress().WithMessage("{PropertyName} deve ser um email válido")
-                .MaximumLength(120).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres")
-                .MustAsync(BeUniqueEmail).WithMessage("Este email já está em uso.");
+                .MaximumLength(120).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres");
 
             RuleFor(u => u.IdSetoresSuporte)
                 .NotNull().WithMessage("A lista de setores de suporte não deve ser nula")
@@ -49,11 +48,6 @@ namespace backend.Validators
         private async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
         {
             return !await _usuarioRepository.UsernameExistsAsync(username);
-        }
-
-        private async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
-        {
-            return !await _usuarioRepository.EmailExistsAsync(email);
         }
     }
 }

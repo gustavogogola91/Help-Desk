@@ -11,5 +11,7 @@ namespace backend.Interfaces
         Task<PagedList<UsuarioDTO>> GetUsuarioBySetor(long id, int currentPage);
         Task NewUsuario(UsuarioPostDTO post);
         Task UserChangePassword(long id, ChangePasswordDTO dto);
+        Task AdminResetUserPassword(long id);
+        Task ModifyUsuario(UsuarioPutDTO put, long id);
     }
 }
