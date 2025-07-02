@@ -7,16 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    public class UsuarioRepository : IUsuarioRepository
+    public class UsuarioRepository(AppDbContext database, IPaginationHelper pagination) : IUsuarioRepository
     {
-        private readonly AppDbContext _database;
-        private readonly IPaginationHelper _pagination;
-
-        public UsuarioRepository(AppDbContext database, IPaginationHelper pagination)
-        {
-            _database = database;
-            _pagination = pagination;
-        }
+        private readonly AppDbContext _database = database;
+        private readonly IPaginationHelper _pagination = pagination;
 
         public async Task<bool> ExisteAsync(long id)
         {

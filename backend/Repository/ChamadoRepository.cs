@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    public class ChamadoRepository : IChamadoRepository
+    public class ChamadoRepository(AppDbContext database) : IChamadoRepository
     {
-        private readonly AppDbContext _database;
-
-        public ChamadoRepository(AppDbContext database)
-        {
-            _database = database;
-        }
+        private readonly AppDbContext _database = database;
 
         public async Task<bool> ExisteAsync(long id)
         {

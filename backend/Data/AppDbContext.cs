@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
-        public AppDbContext(DbContextOptions options) : base(options) { }
-
         public DbSet<Chamado> tb_chamado { get; set; }
         public DbSet<ChamadoAcompanhamento> tb_chamado_acompanhamento { get; set; }
         public DbSet<ChamadoAtendimento> tb_chamado_atendimento { get; set; }

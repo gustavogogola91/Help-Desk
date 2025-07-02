@@ -3,13 +3,8 @@ using Data;
 
 namespace backend.Repository
 {
-    public class ChamadoAtendimentoRepository : IChamadoAtendimentoRepository
+    public class ChamadoAtendimentoRepository(AppDbContext database) : IChamadoAtendimentoRepository
     {
-        private readonly AppDbContext _database;
-
-        public ChamadoAtendimentoRepository(AppDbContext database)
-        {
-            _database = database;
-        }
+        private readonly AppDbContext _database = database;
     }
 }

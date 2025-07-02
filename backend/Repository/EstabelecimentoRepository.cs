@@ -6,16 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    public class EstabelecimentoRepository : IEstabelecimentoRepository
+    public class EstabelecimentoRepository(AppDbContext database, IPaginationHelper pagination) : IEstabelecimentoRepository
     {
-        private readonly AppDbContext _database;
-        private readonly IPaginationHelper _pagination;
-
-        public EstabelecimentoRepository(AppDbContext database, IPaginationHelper pagination)
-        {
-            _database = database;
-            _pagination = pagination;
-        }
+        private readonly AppDbContext _database = database;
+        private readonly IPaginationHelper _pagination = pagination;
 
         public async Task<bool> ExisteAsync(long id)
         {
@@ -39,6 +33,12 @@ namespace backend.Repository
         public async Task NewEstabelecimento(Estabelecimento estabelecimento)
         {
             _database.tb_estabelecimento.Add(estabelecimento);
+            await _database.SaveChangesAsync();
+        }
+
+        public async Task SaveChanges(Estabelecimento estabelecimento)
+        {
+            _database.Update(estabelecimento);
             await _database.SaveChangesAsync();
         }
     }

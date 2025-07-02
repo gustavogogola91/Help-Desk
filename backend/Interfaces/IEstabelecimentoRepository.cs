@@ -9,5 +9,6 @@ namespace backend.Interfaces
         Task<PagedList<Estabelecimento>> GetAllEstabelecimentos(int currentPage);
         Task<Estabelecimento> GetEstabelecimentoById(long id);
         Task NewEstabelecimento(Estabelecimento estabelecimento);
+        Task SaveChanges(Estabelecimento estabelecimento);
     }
 }

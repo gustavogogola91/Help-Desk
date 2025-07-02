@@ -10,26 +10,15 @@ using FluentValidation;
 
 namespace backend.Service
 {
-    public class UsuarioService : IUsuarioService
+    public class UsuarioService(IConfiguration config, IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IValidator<ChangePasswordDTO> changePasswordValidator, IMapper mapper, IEncryptHelper hasher) : IUsuarioService
     {
-        private readonly IConfiguration _config;
-        private readonly IUsuarioRepository _usuarioRepository;
-        private readonly ISetorRepository _setorRepository;
-        private readonly IValidator<UsuarioPostDTO> _usuarioValidator;
-        private readonly IValidator<ChangePasswordDTO> _changePasswordValidator;
-        private readonly IMapper _mapper;
-        private readonly IEncryptHelper _hasher;
-
-        public UsuarioService(IConfiguration config, IUsuarioRepository usuarioRepository, ISetorRepository setorRepository, IValidator<UsuarioPostDTO> usuarioValidator, IValidator<ChangePasswordDTO> changePasswordValidator, IMapper mapper, IEncryptHelper hasher)
-        {
-            _config = config;
-            _usuarioRepository = usuarioRepository;
-            _setorRepository = setorRepository;
-            _usuarioValidator = usuarioValidator;
-            _changePasswordValidator = changePasswordValidator;
-            _mapper = mapper;
-            _hasher = hasher;
-        }
+        private readonly IConfiguration _config = config;
+        private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
+        private readonly ISetorRepository _setorRepository = setorRepository;
+        private readonly IValidator<UsuarioPostDTO> _usuarioValidator = usuarioValidator;
+        private readonly IValidator<ChangePasswordDTO> _changePasswordValidator = changePasswordValidator;
+        private readonly IMapper _mapper = mapper;
+        private readonly IEncryptHelper _hasher = hasher;
 
         public async Task ModifyStatus(long id)
         {

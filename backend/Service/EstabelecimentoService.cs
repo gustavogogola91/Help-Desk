@@ -8,18 +8,11 @@ using FluentValidation;
 
 namespace backend.Service
 {
-    public class EstabelecimentoService : IEstabelecimentoService
+    public class EstabelecimentoService(IEstabelecimentoRepository estabelecimentoRepository, IValidator<EstabelecimentoPostDTO> estabelecimentoValidator, IMapper mapper) : IEstabelecimentoService
     {
-        private readonly IEstabelecimentoRepository _estabelecimentoRepository;
-        private readonly IValidator<EstabelecimentoPostDTO> _estabelecimentoValidator;
-        private readonly IMapper _mapper;
-
-        public EstabelecimentoService(IEstabelecimentoRepository estabelecimentoRepository, IValidator<EstabelecimentoPostDTO> estabelecimentoValidator, IMapper mapper)
-        {
-            _estabelecimentoRepository = estabelecimentoRepository;
-            _estabelecimentoValidator = estabelecimentoValidator;
-            _mapper = mapper;
-        }
+        private readonly IEstabelecimentoRepository _estabelecimentoRepository = estabelecimentoRepository;
+        private readonly IValidator<EstabelecimentoPostDTO> _estabelecimentoValidator = estabelecimentoValidator;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<PagedList<EstabelecimentoDTO>> GetAllEstabelecimentos(int currentPage)
         {
@@ -39,10 +32,17 @@ namespace backend.Service
 
         public async Task<EstabelecimentoDTO> GetEstabelecimentoById(long id)
         {
-            var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Nenhum estabelecimento encontrado", id);
+            var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Estabelecimento não encontrado", id);
             var estabelecimentoDTO = _mapper.Map<EstabelecimentoDTO>(estabelecimento);
 
             return estabelecimentoDTO;
+        }
+
+        public async Task ModifyStatus(long id)
+        {
+            var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Estabelecimento não encontrado", id);
+            estabelecimento.Ativo = !estabelecimento.Ativo;
+            await _estabelecimentoRepository.SaveChanges(estabelecimento);
         }
 
         public async Task NewEstabelecimento(EstabelecimentoPostDTO post)
@@ -58,5 +58,7 @@ namespace backend.Service
 
             await _estabelecimentoRepository.NewEstabelecimento(estabelecimento);
         }
+
+
     }
 }

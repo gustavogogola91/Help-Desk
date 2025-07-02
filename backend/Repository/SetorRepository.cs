@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    public class SetorRepository : ISetorRepository
+    public class SetorRepository(AppDbContext database) : ISetorRepository
     {
-        private readonly AppDbContext _database;
-
-        public SetorRepository(AppDbContext database)
-        {
-            _database = database;
-        }
+        private readonly AppDbContext _database = database;
 
         public async Task<bool> ExisteAsync(long id)
         {

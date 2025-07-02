@@ -7,14 +7,9 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/estabelecimento")]
-    public class EstabelecimentoController : ControllerBase
+    public class EstabelecimentoController(IEstabelecimentoService estabelecimentoService) : ControllerBase
     {
-        private readonly IEstabelecimentoService _estabelecimentoService;
-
-        public EstabelecimentoController(IEstabelecimentoService estabelecimentoService)
-        {
-            _estabelecimentoService = estabelecimentoService;
-        }
+        private readonly IEstabelecimentoService _estabelecimentoService = estabelecimentoService;
 
         [HttpGet]
         public async Task<ActionResult<PagedList<EstabelecimentoDTO>>> GetAllEstabelecimentos(int currentPage = 1)
@@ -38,5 +33,12 @@ namespace backend.Controllers
         }
 
         //TODO: Continuar com os endpoints
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ModifyStatus(long id)
+        {
+            await _estabelecimentoService.ModifyStatus(id);
+            return Ok();
+        }
     }
 }
