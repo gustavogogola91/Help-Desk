@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Authentication;
 using System.Text.Json;
 using backend.DTO.Erros;
 using backend.Exceptions;
@@ -62,6 +63,38 @@ namespace backend.Middleware
                 var erroString = ValidationErrorFormater.FormatErrorsToString(errosDict);
 
                 var response = new APIException(context.Response.StatusCode.ToString(), ex.Message, erroString);
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(response, options);
+                await context.Response.WriteAsync(json);
+            }
+            catch (InvalidCredentialException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                _logger.LogWarning(ex, ex.Message);
+
+                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message);
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(response, options);
+                await context.Response.WriteAsync(json);
+            }
+            catch (ArgumentException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                var response = new APIException(context.Response.StatusCode.ToString(), ex.Message);
 
                 var options = new JsonSerializerOptions
                 {
