@@ -36,6 +36,7 @@ builder.Services.AddScoped<IValidator<EquipamentoPostDTO>, EquipamentoValidator>
 builder.Services.AddScoped<IValidator<EstabelecimentoPostDTO>, EstabelecimentoValidator>();
 builder.Services.AddScoped<IValidator<SetorPostDTO>, SetorValidator>();
 builder.Services.AddScoped<IValidator<UsuarioPostDTO>, UsuarioValidator>();
+builder.Services.AddScoped<IValidator<ChangePasswordDTO>, ChangePasswordValidator>();
 
 builder.Services.AddScoped<IChamadoAcompanhamentoRepository, ChamadoAcompanhamentoRepository>();
 builder.Services.AddScoped<IChamadoAtendimentoRepository, ChamadoAtendimentoRepository>();
@@ -69,8 +70,6 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("Default");
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
