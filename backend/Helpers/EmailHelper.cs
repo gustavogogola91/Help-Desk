@@ -85,9 +85,8 @@ namespace backend.Helpers
                 email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
                 {
                     Text = @$"
-                        <p>Mensagem: {ex.Message}</p>
-                        <p>StackTrace: {ex.StackTrace}</p>
-                        <p>Soure: {ex.Source}</p>
+                        <p><span style='font-weight: bold;'>Mensagem:</span> {ex.Message}</p>
+                        <p><span style='font-weight: bold;'>StackTrace:</span> {ex.StackTrace}</p>
                         <span style='font-weight: bold;'>EMAIL DE ENVIO AUTOMÁTICO!</span>
                     "
                 };

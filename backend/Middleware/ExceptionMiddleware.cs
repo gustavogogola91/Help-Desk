@@ -9,12 +9,12 @@ using FluentValidation;
 
 namespace backend.Middleware
 {
-    public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env, IEmailHelper email)
+    public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env, IServiceScopeFactory serviceScope)
     {
         private readonly RequestDelegate _next = next;
         private readonly ILogger<ExceptionMiddleware> _logger = logger;
         private readonly IHostEnvironment _env = env;
-        private readonly IEmailHelper _email = email;
+        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScope;
 
         private readonly JsonSerializerOptions _options = new()
         {
@@ -98,11 +98,15 @@ namespace backend.Middleware
 
                 if (_env.IsProduction())
                 {
-                    await _email.SendEmailInternalError(ex);
+                    using (var scope = _serviceScopeFactory.CreateScope())
+                    {
+                        var emailHelper = scope.ServiceProvider.GetRequiredService<IEmailHelper>();
+                        await emailHelper.SendEmailInternalError(ex);
+                    }
                 }
 
-                 var data = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local);
-                _logger.LogError($"[{string.Format("{0:dd/MM/yyyy-HH-mm-ss}", data)}][Erro] Erro não tratado: {ex.Message}");
+                var data = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local);
+                _logger.LogError($"[{string.Format("{0:dd/MM/yyyy-HH:mm:ss}", data)}][Erro] Erro não tratado: {ex.Message}");
 
                 var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
