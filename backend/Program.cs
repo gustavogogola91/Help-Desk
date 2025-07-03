@@ -29,6 +29,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton<IPaginationHelper, PaginationHelper>();
 builder.Services.AddSingleton<IEncryptHelper, EncryptHelper>();
+builder.Services.AddScoped<IEmailHelper, EmailHelper>();
 
 builder.Services.AddScoped<IValidator<ChamadoPostDTO>, ChamadoValidator>();
 builder.Services.AddScoped<IValidator<ChamadoAcompanhamentoPostDTO>, ChamadoAcompanhamentoValidator>();
