@@ -66,12 +66,16 @@ namespace backend.Repository
             return pagedList;
         }
 
-        public async Task<List<string>> GetEmailsBySetor(long setorId)
+        public async Task<List<EmailDTO>> GetEmailsBySetor(long setorId)
         {
             var emails = await _database.tb_setor_usuario.Where(su => su.SetorId == setorId)
                 .Include(su => su.Usuario)
                 .Where(su => su.Usuario!.Ativo)
-                .Select(su => su.Usuario!.Email).ToListAsync();
+                .Select(su => new EmailDTO
+                {
+                    Nome = su.Usuario!.Nome,
+                    Email = su.Usuario!.Email,
+                }).ToListAsync();
 
             return emails;
         }

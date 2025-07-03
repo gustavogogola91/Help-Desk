@@ -13,6 +13,7 @@ namespace backend.Interfaces
         Task<List<Usuario>> GetAllUsuarios();
         Task<Usuario> GetUsuarioById(long id);
         Task<PagedList<UsuarioDTO>> GetUsuariosBySetor(long setorId, int currentPage);
+        Task<List<EmailDTO>> GetEmailsBySetor(long setorId);
         Task NewUsuario(Usuario usuario);
         Task SalvarAlteracao(Usuario usuario);
     }
