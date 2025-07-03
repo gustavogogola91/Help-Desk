@@ -12,10 +12,17 @@ namespace backend.Controllers
     {
         private readonly IUsuarioService _usuarioService = usuarioService;
 
-        [HttpGet]
-        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuarios(int currentPage = 1)
+        [HttpGet()]
+        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuarios()
         {
-            var list = await _usuarioService.GetAllUsuarios(currentPage);
+            var list = await _usuarioService.GetAllUsuarios();
+            return Ok(list);
+        }
+
+        [HttpGet("admin")]
+        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuariosPaged(int currentPage = 1)
+        {
+            var list = await _usuarioService.GetAllUsuariosPaged(currentPage);
             return Ok(list);
         }
 
@@ -54,7 +61,6 @@ namespace backend.Controllers
             return Ok();
         }
 
-        // TODO: Criar metodo para o admin resetar a senha (em controller especifico talvez)
         [HttpPatch("admin/{id}/password")]
         public async Task<IActionResult> ResetPassword(long id)
         {

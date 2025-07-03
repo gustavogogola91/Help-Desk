@@ -27,12 +27,18 @@ namespace backend.Repository
             return await _database.tb_usuario.AnyAsync(u => u.Username == username);
         }
         
-        public async Task<PagedList<Usuario>> GetAllUsuarios(int currentPage)
+        public async Task<PagedList<Usuario>> GetAllUsuariosPaged(int currentPage)
         {
             var query = _database.tb_usuario.AsQueryable();
             var pagedList = await _pagination.CreateAsync(query, currentPage, 10);
 
             return pagedList;
+        }
+
+        public async Task<List<Usuario>> GetAllUsuarios()
+        {
+            var usuarios = await _database.tb_usuario.Where(u => u.Ativo).ToListAsync();
+            return usuarios;
         }
 
         public async Task<Usuario> GetUsuarioById(long id)
@@ -64,6 +70,7 @@ namespace backend.Repository
         {
             var emails = await _database.tb_setor_usuario.Where(su => su.SetorId == setorId)
                 .Include(su => su.Usuario)
+                .Where(su => su.Usuario!.Ativo)
                 .Select(su => su.Usuario!.Email).ToListAsync();
 
             return emails;
@@ -80,5 +87,6 @@ namespace backend.Repository
             _database.tb_usuario.Update(usuario);
             await _database.SaveChangesAsync();
         }
+
     }
 }

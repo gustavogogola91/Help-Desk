@@ -33,7 +33,7 @@ namespace backend.Validators
 
             RuleFor(u => u.IdSetoresSuporte)
                 .NotNull().WithMessage("A lista de setores de suporte não deve ser nula")
-                .Must(ids => ids != null && ids.Any()).WithMessage("Usuario deve estar ligado a pelo menos um setor")
+                .Must(ids => ids != null && ids.Count != 0).WithMessage("Usuario deve estar ligado a pelo menos um setor")
                 .ForEach(id =>
                 {
                     id.MustAsync(BeAnExistingSetor).WithMessage("Um dos IDs de setor de suporte não existe.");

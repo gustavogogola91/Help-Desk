@@ -28,9 +28,9 @@ namespace backend.Service
             await _usuarioRepository.SalvarAlteracao(usuario);
         }
 
-        public async Task<PagedList<UsuarioDTO>> GetAllUsuarios(int currentPage)
+        public async Task<PagedList<UsuarioDTO>> GetAllUsuariosPaged(int currentPage)
         {
-            var usuarios = await _usuarioRepository.GetAllUsuarios(currentPage);
+            var usuarios = await _usuarioRepository.GetAllUsuariosPaged(currentPage);
 
             if (!usuarios.Any())
             {
@@ -139,6 +139,20 @@ namespace backend.Service
             usuario.Tipo = put.Tipo ?? usuario.Tipo;
 
             await _usuarioRepository.SalvarAlteracao(usuario);
+        }
+
+        public async Task<IEnumerable<UsuarioDTO>> GetAllUsuarios()
+        {
+            var usuarios = await _usuarioRepository.GetAllUsuarios();
+
+            if (usuarios.Count == 0)
+            {
+                throw new NotFoundException("Nenhum usuário encontrado");
+            }
+
+            var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+
+            return usuariosDTO;
         }
     }
 }
