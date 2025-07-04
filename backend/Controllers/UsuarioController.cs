@@ -19,7 +19,7 @@ namespace backend.Controllers
             return Ok(list);
         }
 
-        [HttpGet("admin")]
+        [HttpGet("paginado")]
         public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuariosPaged(int currentPage = 1)
         {
             var list = await _usuarioService.GetAllUsuariosPaged(currentPage);
@@ -61,7 +61,7 @@ namespace backend.Controllers
             return Ok();
         }
 
-        [HttpPatch("admin/{id}/password")]
+        [HttpPatch("{id}/reset/password")]
         public async Task<IActionResult> ResetPassword(long id)
         {
             await _usuarioService.AdminResetUserPassword(id);
