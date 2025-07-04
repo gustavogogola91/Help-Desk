@@ -13,7 +13,7 @@ namespace backend.Controllers
         private readonly IUsuarioService _usuarioService = usuarioService;
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<UsuarioDTO>>> GetAllUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetAllUsuarios()
         {
             var list = await _usuarioService.GetAllUsuarios();
             return Ok(list);
