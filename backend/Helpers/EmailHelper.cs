@@ -29,6 +29,7 @@ namespace backend.Helpers
                     {
                         list.Add(new MailboxAddress(remetente.Nome, remetente.Email));
                     }
+                    email.To.AddRange(list);
                 }
                 else
                 {
@@ -51,7 +52,7 @@ namespace backend.Helpers
                     <span style='font-weight: bold; white-space: pre-line;'>Descricao:</span><br/><br/>
                     {chamado.Descricao}<br/><br/>
                     <span style='font-weight: bold;'>EMAIL DE ENVIO AUTOMÁTICO!</span>
-                "
+                    "
                 };
 
                 using (var smtp = new SmtpClient())
