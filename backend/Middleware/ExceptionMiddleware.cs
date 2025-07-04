@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Authentication;
+using System.Text;
 using System.Text.Json;
 using backend.DTO.Erros;
 using backend.Exceptions;
@@ -9,12 +10,14 @@ using FluentValidation;
 
 namespace backend.Middleware
 {
-    public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env, IServiceScopeFactory serviceScope)
+    public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env, IServiceScopeFactory serviceScope, IConfiguration config, IFileLoggerHelper fileLogger)
     {
         private readonly RequestDelegate _next = next;
         private readonly ILogger<ExceptionMiddleware> _logger = logger;
         private readonly IHostEnvironment _env = env;
         private readonly IServiceScopeFactory _serviceScopeFactory = serviceScope;
+        private readonly IConfiguration _config = config;
+        private readonly IFileLoggerHelper _fileLogger = fileLogger;
 
         private readonly JsonSerializerOptions _options = new()
         {
@@ -85,7 +88,26 @@ namespace backend.Middleware
             catch (EmailException ex)
             {
                 var data = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local);
-                _logger.LogError($"[{string.Format("{0:dd/MM/yyyy-HH-mm-ss}", data)}][Email] Erro ao enviar emails: {ex.InnerException!.Message}");
+                var logMessage = $"[{string.Format("{0:dd/MM/yyyy-HH-mm-ss}", data)}][Email] Erro ao enviar emails: {ex.InnerException!.Message} - {ex.InnerException!.StackTrace}";
+
+                _logger.LogError(logMessage);
+                _fileLogger.LogEmailError(logMessage);
+            }
+            catch (InvalidConfiguratioException ex)
+            {
+                var data = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local);
+                var logMessage = $"[{string.Format("{0:dd/MM/yyyy-HH-mm-ss}", data)}][Configuração] Erro de configuração: {ex.Message} - {ex.StackTrace}";
+
+                if (_env.IsDevelopment())
+                {
+                    using (var scope = _serviceScopeFactory.CreateScope())
+                    {
+                        var emailHelper = scope.ServiceProvider.GetRequiredService<IEmailHelper>();
+                        await emailHelper.SendEmailInternalError(ex);
+                    }
+                }
+
+                _logger.LogError(logMessage);
             }
             catch (Exception ex)
             {
@@ -96,7 +118,7 @@ namespace backend.Middleware
                     new APIException(context.Response.StatusCode.ToString(), ex.Message, ex.StackTrace!.ToString()) :
                     new APIException(context.Response.StatusCode.ToString(), ex.Message, "Internal Server Error");
 
-                if (_env.IsProduction())
+                if (_env.IsDevelopment())
                 {
                     using (var scope = _serviceScopeFactory.CreateScope())
                     {
@@ -106,7 +128,10 @@ namespace backend.Middleware
                 }
 
                 var data = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local);
-                _logger.LogError($"[{string.Format("{0:dd/MM/yyyy-HH:mm:ss}", data)}][Erro] Erro não tratado: {ex.Message}");
+                var logMessage = $"[{string.Format("{0:dd/MM/yyyy-HH:mm:ss}", data)}][Erro] Erro não tratado: {ex.Message} - {ex.StackTrace}";
+
+                _fileLogger.LogError(logMessage);
+                _logger.LogError(logMessage);
 
                 var json = JsonSerializer.Serialize(response, _options);
                 await context.Response.WriteAsync(json);
