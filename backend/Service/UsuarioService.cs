@@ -28,11 +28,25 @@ namespace backend.Service
             await _usuarioRepository.SalvarAlteracao(usuario);
         }
 
+        public async Task<IEnumerable<UsuarioDTO>> GetAllUsuarios()
+        {
+            var usuarios = await _usuarioRepository.GetAllUsuarios();
+
+            if (usuarios.Count == 0)
+            {
+                throw new NotFoundException("Nenhum usuário encontrado");
+            }
+
+            var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+
+            return usuariosDTO;
+        }
+        
         public async Task<PagedList<UsuarioDTO>> GetAllUsuariosPaged(int currentPage)
         {
             var usuarios = await _usuarioRepository.GetAllUsuariosPaged(currentPage);
 
-            if (!usuarios.Any())
+            if (usuarios.Count == 0)
             {
                 throw new NotFoundException("Nenhum usuário encontrado");
             }
@@ -141,18 +155,6 @@ namespace backend.Service
             await _usuarioRepository.SalvarAlteracao(usuario);
         }
 
-        public async Task<IEnumerable<UsuarioDTO>> GetAllUsuarios()
-        {
-            var usuarios = await _usuarioRepository.GetAllUsuarios();
 
-            if (usuarios.Count == 0)
-            {
-                throw new NotFoundException("Nenhum usuário encontrado");
-            }
-
-            var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
-
-            return usuariosDTO;
-        }
     }
 }
