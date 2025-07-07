@@ -36,7 +36,7 @@ namespace backend.Repository
             await _database.SaveChangesAsync();
         }
 
-        public async Task SaveChanges(Estabelecimento estabelecimento)
+        public async Task SalvarAlteracao(Estabelecimento estabelecimento)
         {
             _database.Update(estabelecimento);
             await _database.SaveChangesAsync();

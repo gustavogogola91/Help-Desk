@@ -42,7 +42,7 @@ namespace backend.Service
         {
             var estabelecimento = await _estabelecimentoRepository.GetEstabelecimentoById(id) ?? throw new NotFoundException("Estabelecimento não encontrado", id);
             estabelecimento.Ativo = !estabelecimento.Ativo;
-            await _estabelecimentoRepository.SaveChanges(estabelecimento);
+            await _estabelecimentoRepository.SalvarAlteracao(estabelecimento);
         }
 
         public async Task NewEstabelecimento(EstabelecimentoPostDTO post)
