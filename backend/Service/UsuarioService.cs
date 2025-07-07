@@ -89,8 +89,8 @@ namespace backend.Service
             }
 
             Usuario usuario = _mapper.Map<Usuario>(post);
-
-            usuario.Senha = _hasher.EncryptPassword(usuario.Senha);
+            var senhaPadrao = _config["Default:Password"] ?? throw new InvalidConfiguratioException("Senha padrão não encontrada");
+            usuario.Senha = _hasher.EncryptPassword(senhaPadrao);
 
             post.IdSetoresSuporte.ForEach((id) =>
             {

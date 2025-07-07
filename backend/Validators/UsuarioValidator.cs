@@ -22,10 +22,6 @@ namespace backend.Validators
                 .MaximumLength(60).WithMessage("{PropertyName} deve conter no máximo {MaxLength} caracteres")
                 .MustAsync(BeUniqueUsername).WithMessage("Este username já está em uso.");
 
-            RuleFor(u => u.Senha)
-                .NotEmpty().WithMessage("{PropertyName} é obrigatório")
-                .Length(8, 32).WithMessage("{PropertyName} deve conter entre {MinLength} e {MaxLength} caracteres");
-
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("{PropertyName} é obrigatório")
                 .EmailAddress().WithMessage("{PropertyName} deve ser um email válido")
