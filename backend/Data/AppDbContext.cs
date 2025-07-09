@@ -152,7 +152,6 @@ namespace Data
                     .IsRequired();
 
                 entity.Property(e => e.Senha)
-                    .HasMaxLength(32)
                     .IsRequired();
 
                 entity.Property(e => e.Email)

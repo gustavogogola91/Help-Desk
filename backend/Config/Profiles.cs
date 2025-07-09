@@ -54,7 +54,7 @@ namespace backend.Config
             CreateMap<Setor, SetorDTO>()
                 .ForMember(
                     dest => dest.NomeEstabelecimento,
-                    opt => opt.MapFrom(src => src.Nome)
+                    opt => opt.MapFrom(src => src.Estabelecimento!.Nome)
                 );
             CreateMap<SetorPostDTO, Setor>();
 

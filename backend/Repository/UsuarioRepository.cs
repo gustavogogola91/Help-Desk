@@ -29,7 +29,7 @@ namespace backend.Repository
         
         public async Task<PagedList<Usuario>> GetAllUsuariosPaged(int currentPage)
         {
-            var query = _database.tb_usuario.AsQueryable();
+            var query = _database.tb_usuario.Include(u => u.SetoresSuporte).ThenInclude(su => su.Setor).AsQueryable();
             var pagedList = await _pagination.CreateAsync(query, currentPage, 10);
 
             return pagedList;
@@ -37,13 +37,13 @@ namespace backend.Repository
 
         public async Task<List<Usuario>> GetAllUsuarios()
         {
-            var usuarios = await _database.tb_usuario.Where(u => u.Ativo).ToListAsync();
+            var usuarios = await _database.tb_usuario.Include(u => u.SetoresSuporte).ThenInclude(su => su.Setor).Where(u => u.Ativo).ToListAsync();
             return usuarios;
         }
 
         public async Task<Usuario> GetUsuarioById(long id)
         {
-            var usuario = await _database.tb_usuario.FirstOrDefaultAsync(u => u.Id == id);
+            var usuario = await _database.tb_usuario.Include(u => u.SetoresSuporte).ThenInclude(su => su.Setor).FirstOrDefaultAsync(u => u.Id == id);
             return usuario!;
         }
 

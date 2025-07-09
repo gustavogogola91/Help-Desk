@@ -3,6 +3,7 @@ using backend.DTO;
 using backend.Exceptions;
 using backend.Helpers;
 using backend.Interfaces;
+using backend.Model;
 using FluentValidation;
 
 namespace backend.Service
@@ -58,9 +59,18 @@ namespace backend.Service
             await _setorRepository.SalvarAlteracao(setor);
         }
 
-        public Task NewSetor(SetorPostDTO post)
+        public async Task NewSetor(SetorPostDTO post)
         {
-            throw new NotImplementedException();
+            var validacao = await _setorValidator.ValidateAsync(post);
+
+            if (!validacao.IsValid)
+            {
+                throw new ValidationException("Informações do setor inválidas", validacao.Errors);
+            }
+
+            var setor = _mapper.Map<Setor>(post);
+
+            await _setorRepository.NewSetor(setor);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace backend.Interfaces
         Task<List<Setor>> GetAllSetores();
         Task<PagedList<Setor>> GetAllSetoresPaged(int currentPage);
         Task<Setor> GetSetorById(long id);
+        Task NewSetor(Setor setor);
         Task SalvarAlteracao(Setor setor);
     }
 }

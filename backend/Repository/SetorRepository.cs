@@ -18,13 +18,13 @@ namespace backend.Repository
 
         public async Task<List<Setor>> GetAllSetores()
         {
-            var setores = await _database.tb_setor.Where(s => s.Ativo).ToListAsync();
+            var setores = await _database.tb_setor.Include(s => s.Estabelecimento).Where(s => s.Ativo).ToListAsync();
             return setores;
         }
 
         public async Task<PagedList<Setor>> GetAllSetoresPaged(int currentPage)
         {
-            var query = _database.tb_setor.AsQueryable();
+            var query = _database.tb_setor.Include(s => s.Estabelecimento).AsQueryable();
             var pagedList = await _pagination.CreateAsync(query, currentPage, 10);
 
             return pagedList;
@@ -32,8 +32,14 @@ namespace backend.Repository
 
         public async Task<Setor> GetSetorById(long id)
         {
-            var usuario = await _database.tb_setor.FirstOrDefaultAsync(s => s.Id == id);
+            var usuario = await _database.tb_setor.Include(s => s.Estabelecimento).FirstOrDefaultAsync(s => s.Id == id);
             return usuario!;
+        }
+
+        public async Task NewSetor(Setor setor)
+        {
+            _database.tb_setor.Add(setor);
+            await _database.SaveChangesAsync();
         }
 
         public async Task SalvarAlteracao(Setor setor)

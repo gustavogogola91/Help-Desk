@@ -3,6 +3,7 @@ using backend.Interfaces;
 using backend.Model;
 using Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace backend.Repository
 {
@@ -18,12 +19,12 @@ namespace backend.Repository
 
         public async Task<IEnumerable<Equipamento>> GetAllEquipamentos()
         {
-            return await _database.tb_equipamento.Where(e => e.Ativo).ToListAsync();
+            return await _database.tb_equipamento.Include(e => e.Setor).Where(e => e.Ativo).ToListAsync();
         }
 
         public async Task<PagedList<Equipamento>> GetAllEquipamentosPaged(int currentPage)
         {
-            var query = _database.tb_equipamento.AsQueryable();
+            var query = _database.tb_equipamento.Include(e => e.Setor).AsQueryable();
             var equipamentos = await _pagination.CreateAsync(query, currentPage, 10);
 
             return equipamentos;
@@ -31,7 +32,7 @@ namespace backend.Repository
 
         public async Task<Equipamento> GetEquipamentoById(long id)
         {
-            var equipamento = await _database.tb_equipamento.FirstOrDefaultAsync(e => e.Id == id);
+            var equipamento = await _database.tb_equipamento.Include(e => e.Setor).FirstOrDefaultAsync(e => e.Id == id);
 
             return equipamento!;
         }

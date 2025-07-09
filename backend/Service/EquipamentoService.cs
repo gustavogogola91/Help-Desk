@@ -63,14 +63,14 @@ namespace backend.Service
 
         public async Task NewEquipamento(EquipamentoPostDTO post)
         {
-            var validacao = _validator.Validate(post);
+            var validacao = await _validator.ValidateAsync(post);
 
             if (!validacao.IsValid)
             {
                 throw new ValidationException("Informações do equipamento inválidas", validacao.Errors);
             }
 
-            var equipamento = _mapper.Map<Equipamento>(validacao);
+            var equipamento = _mapper.Map<Equipamento>(post);
 
             await _equipamentoRepository.NewEquipamento(equipamento);
         }

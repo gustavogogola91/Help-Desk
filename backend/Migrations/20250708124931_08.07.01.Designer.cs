@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250629181024_29.06.01")]
-    partial class _290601
+    [Migration("20250708124931_08.07.01")]
+    partial class _080701
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "status_atendimento", new[] { "aguardando", "em_atendimento", "concluido" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_usuario", new[] { "adm", "suporte" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_usuario", new[] { "suporte", "adm" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("backend.Model.Chamado", b =>
@@ -293,8 +293,7 @@ namespace backend.Migrations
 
                     b.Property<string>("Senha")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Tipo")
                         .HasColumnType("integer");
