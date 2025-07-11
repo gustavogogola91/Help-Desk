@@ -48,6 +48,7 @@ builder.Services.AddScoped<IEstabelecimentoRepository, EstabelecimentoRepository
 builder.Services.AddScoped<ISetorRepository, SetorRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+builder.Services.AddScoped<IChamadoService, ChamadoService>();
 builder.Services.AddScoped<IEquipamentoService, EquipamentoService>();
 builder.Services.AddScoped<IEstabelecimentoService, EstabelecimentoService>();
 builder.Services.AddScoped<ISetorService, SetorService>();
